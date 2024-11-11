@@ -1,7 +1,7 @@
 import { SerialPort } from 'serialport';
 import MorseCode from '../../json/morseCode.json' with { type: 'json' };
 import morseToLetter from '../../json/morseToLetter.json' with  { type: 'json' };
-import { socketServer } from '../../appi.js';
+import { socketServer } from '../../app.js';
 
 export const port = new SerialPort({
     path: 'COM6',

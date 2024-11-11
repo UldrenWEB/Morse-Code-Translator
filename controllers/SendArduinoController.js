@@ -6,9 +6,14 @@ import { port } from '../services/received/receivedMorse.js';
 
 const validator = new ValidatorSendArduino();
 
+let isValidRequest = true;
+
 class SendArduinoController {
   static sendArduino = (req, res, next) => {
     try {
+
+      if(!isValidRequest) throw new ApplicationError('Debe esperar que termine de transmitir mensaje anterior para enviar');
+
       validator.validateSendArduino(req.body);
       const { path, message } = req.body;
 
@@ -24,12 +29,16 @@ class SendArduinoController {
           next(new ApplicationError(`Error escribiendo al puerto: ${err.message}`));
         }
 
+        isValidRequest = false;
+
         setTimeout(() => {
           res.status(200).json({
             msg: 'Datos enviados correctamente',
           });
-        }, 100);
+          setTimeout(() => isValidRequest = true, 2500);
+        }, 500);
       });
+
     } catch (error) {
       next(error);
     }
